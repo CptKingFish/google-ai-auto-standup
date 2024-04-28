@@ -13,8 +13,18 @@ export default {
       const site = new NextjsSite(stack, "site");
 
       new Cron(stack, "cron", {
-        schedule: "rate(1 minute)",
-        job: "functions/src/cron.handler",
+        schedule: "rate(15 minutes)",
+        job: {
+          function: {
+            handler: "functions/src/cron.handler",
+            environment: {
+              GITHUB_API_URL: process.env.GITHUB_API_URL!,
+              GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
+              REPO_OWNER: process.env.REPO_OWNER!,
+              REPO_NAME: process.env.REPO_NAME!,
+            },
+          },
+        },
       });
 
       stack.addOutputs({
